@@ -2,10 +2,6 @@
 module VGAController(
 	input clk, 			// 100 MHz System Clock
 	input reset, 		// Reset Signal
-	input up,
-	input down,
-	input left,
-	input right,
 	output hSync, 		// H Sync Signal
 	output vSync, 		// Veritcal Sync Signal
 	output[3:0] VGA_R,  // Red Signal Bits
@@ -15,7 +11,7 @@ module VGAController(
 	inout ps2_data);
 
 	// Lab Memory Files Location
-	localparam FILES_PATH = "C:/Users/Samuel Li/Documents/Duke/2020-21/ECE350/Lab5/";
+	localparam FILES_PATH = "";	// in root
 
 	// Clock divider 100 MHz -> 25 MHz
 	wire clk25; // 25MHz clock
@@ -91,35 +87,5 @@ module VGAController(
 	assign colorOut = active ? colorData : 12'd0; // When not active, output black
 
 	// Quickly assign the output colors to their channels using concatenation
-	assign {VGA_R, VGA_G, VGA_B} = insqr ? 12'd128 : colorOut;
-
-	// drawing a square??
-	reg[9:0] squareX;
-	reg[8:0] squareY;
-	initial begin
-		squareX = 10'd295;
-		squareY = 9'd215;
-	end
-
-	always @(up or down or left or right) begin
-
-		if(up)
-			squareY <= squareY + 9'd1;
-		else if(down)
-			squareY <= squareY - 9'd1;
-		else if(left)
-			squareX <= squareX + 10'd1;
-		else if(right)
-			squareX <= squareX - 10'd1;
-	end
-
-	reg insqr;
-	always @(screenEnd) begin
-		if((x >= squareX) && (x <= squareX + 50) &&
-		(y >= squareY) && (y <= squareY + 50))
-			insqr <= 1'b1;
-		else
-			insqr <= 1'b0;
-	end
-
+	assign {VGA_R, VGA_G, VGA_B} = colorOut;
 endmodule
