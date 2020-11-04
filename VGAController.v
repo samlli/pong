@@ -87,5 +87,56 @@ module VGAController(
 	assign colorOut = active ? colorData : 12'd0; // When not active, output black
 
 	// Quickly assign the output colors to their channels using concatenation
-	assign {VGA_R, VGA_G, VGA_B} = colorOut;
+	assign {VGA_R, VGA_G, VGA_B} = ball ? 12'hfff : colorOut; // if in ball draw white otherwise draw regular background
+
+
+
+
+	// Clock divider 100 MHz -> 100 Hz
+	wire clk100; // 25MHz clock
+
+	reg[19:0] pixCounter2 = 0;      // Pixel counter to divide the clock
+	assign clk100 = pixCounter2[19]; // Set the clock high whenever the second bit (2) is high
+	always @(posedge clk) begin
+		pixCounter2 <= pixCounter2 + 1; // Since the reg is only _ bits, it will reset every _ cycles
+	end
+
+	// draw ball, upper left coords
+	wire[9:0] ball_x, ball_inX;
+	wire[8:0] ball_y, ball_inY;
+	reg[5:0] width = 6'b100000;
+
+	// ball velocity
+	wire[5:0] velX, velY;
+	reg[5:0] vX, vY;
+
+	assign velX = vX;
+	assign velY = vY;
+
+	// update ball position
+	ball ball_loc(.inX(ball_inX), .inY(ball_inY), .velX(6'b1), .velY(6'b1), .width(width), .clk(clk100), .reset(reset), .outX(ball_x), .outY(ball_y));
+
+	assign ball_inX = ball_x;
+	assign ball_inY = ball_y;
+
+	// determine boundaries of ball
+	// wire[9:0] ball_left, ball_right;
+	// wire[8:0] ball_up, ball_down;
+	reg ball;
+
+	// assign ball_left = ball_x;
+	// assign ball_right = ball_x+width;
+	// assign ball_up = ball_y;
+	// assign ball_down = ball_y+width;
+
+	always @(screenEnd) begin
+		if(x>=ball_x && x<=ball_x+width && y>=ball_y && y<=ball_y+width)
+			ball <= 1'b1; // coord inside ball
+		else
+			ball <= 1'b0; // coord outside ball
+	end
+
+
+
+
 endmodule
