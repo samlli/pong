@@ -12,7 +12,14 @@ module VGAController(
 
 	input[9:0] ball_x,	// ball data
 	input[8:0] ball_y,
-	input[5:0] ball_width);
+	input[5:0] ball_width,
+
+	input[9:0] paddle_l_x, // paddle data
+	input[8:0] paddle_l_y,
+	input[9:0] paddle_r_x,
+	input[8:0] paddle_r_y,
+	input[5:0] paddle_width,
+	input[8:0] paddle_length);
 
 	// Lab Memory Files Location
 	localparam FILES_PATH = "";	// in root
@@ -91,17 +98,30 @@ module VGAController(
 	assign colorOut = active ? colorData : 12'd0; // When not active, output black
 
 	// Quickly assign the output colors to their channels using concatenation
-	reg ball;
-
-	assign {VGA_R, VGA_G, VGA_B} = ball ? 12'hfff : colorOut; // if in ball draw white otherwise draw regular background
+	assign {VGA_R, VGA_G, VGA_B} = (ball | paddle_l | paddle_r) ? 12'hfff : colorOut; // if in ball draw white otherwise draw regular background
 
 	// Determine if area inside ball
+	reg ball;
+	reg paddle_l, paddle_r;
+
 	always @(screenEnd) begin
+		// ball
 		if(x>=ball_x && x<=ball_x+ball_width && y>=ball_y && y<=ball_y+ball_width)
 			ball <= 1'b1; // coord inside ball
 		else
 			ball <= 1'b0; // coord outside ball
-	end
 
+		// paddle left
+		if(x>paddle_l_x && x<paddle_l_x+paddle_width && y>paddle_l_y && y<paddle_l_y+paddle_length)
+			paddle_l <= 1'b1;
+		else
+			paddle_l <= 1'b0;
+
+		// paddle right
+		if(x>paddle_r_x && x<paddle_r_x+paddle_width && y>paddle_r_y && y<paddle_r_y+paddle_length)
+			paddle_r <= 1'b1;
+		else
+			paddle_r <= 1'b0;
+	end
 
 endmodule
