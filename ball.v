@@ -1,59 +1,42 @@
 // outputs X and Y coordinates of upper left corner of ball
-module ball(width, clk, reset, outX, outY);
+module ball(width, clk, reset, outX, outY, collision);
     input[5:0] width; // width can range from 0-63
     input clk, reset;
 
     output reg[9:0] outX;
     output reg[8:0] outY;
-    // output reg[5:0] outDx, outDy;
-
-    reg bounceX, bounceY;
+    output reg collision;
 
     reg[5:0] dx, dy;
-    wire[5:0] dxval, dyval;
-
-    assign dxval = dx;
-    assign dyval = dy;
-    // assign dx = (outX<10 || outX+width>630) ? 6'b111111 : 6'b000001;
-    // assign dy = (outY<10 || outY+width>470) ? 6'b111111 : 6'b000001;
+    reg dir_x, dir_y;
 
     always @(posedge clk or posedge reset) begin
         if(reset) begin // ball starts in middle
             outX <= 310-(width>>1);
             outY <= 240-(width>>1);
 
-            dx <= 6'b1;
-            dy <= 6'b1;
-            bounceX <= 0;
-            bounceY <= 0;
+            dx <= 6'd3;
+            dy <= 6'd3;
+            dir_x <= 1'b0;
+            dir_y <= 1'b0;
+            collision <= 1'b0;
         end
         else begin
-            outX <= outX + dx;
-            outY <= outY + dy;
+            if(outX < 14) begin
+                dir_x <= 1'b0;
+            end else if(outX+width > 626) begin
+                dir_x <= 1'b1;
+            end
+            outX <= dir_x ? outX - dx : outX + dx;
 
-            // dx <= (outX<10 || outX+width>630) ? -dxval : dxval;
-            // dy <= (outY<10 || outY+width>470) ? -dyval : dyval;
+            if(outY < 14) begin
+                dir_y <= 1'b0;
+            end else if(outY+width > 466) begin
+                dir_y <= 1'b1;
+            end
+            outY <= dir_y ? outY - dy : outY + dy;
 
-            bounceX <= (outX<10 || outX+width>630) ? 1 : 0;
-            bounceY <= (outY<10 || outY+width>470) ? 1 : 0;
-
-            // if(outX<10 || outX+width>630) ? 1 : 0;
-            // bounceY <=
-            //     bounceX <= 1;
-            // else
-            //     bounceX <= 0;
-            // if(outY<10 || outY+width>470)
-            //     bounceY <= 1;
-            // else
-            //     bounceY <= 0;
+            collision <= dir_x;
         end
-    end
-    always @(posedge bounceX) begin
-        dx <= -dxval;
-        // dx <= (outX<10 || outX+width>630) ? -dxval : dxval;
-    end
-    always @(posedge bounceY) begin
-        dy <= -dyval;
-        // dy <= (outY<10 || outY+width>470) ? -dyval : dyval;
     end
 endmodule

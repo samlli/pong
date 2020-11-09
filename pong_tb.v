@@ -2,7 +2,7 @@
 module pong_tb():
     reg clock = 0;
 
-    pong tester();
+    // pong tester();
 
     // output gtkwave
     initial begin
