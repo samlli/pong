@@ -30,6 +30,7 @@ module ball(ball_width, wall_width, paddle_width, paddle_length, paddle_l_y, pad
             dir_y <= 1'b1;
         end
         else begin
+            // collision detection
             if(outX < paddle_width &&
                 outY+ball_width > paddle_l_y &&
                 outY < paddle_l_y+paddle_length) begin // left paddle
@@ -40,6 +41,7 @@ module ball(ball_width, wall_width, paddle_width, paddle_length, paddle_l_y, pad
                 outY < paddle_r_y+paddle_length) begin // right wall
                 dir_x <= 1'b1;
             end
+            // move ball up or down
             outX <= dir_x ? outX - dx : outX + dx;
 
             if(outY < wall_width) begin // top wall
