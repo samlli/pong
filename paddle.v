@@ -33,8 +33,9 @@ module paddle(width, wall_width, ball_width, length, clk, reset, ball_x, ball_y,
         else begin
             // separate the left and right paddles
             // only react if ball is heading in my direction
+            // left = side 1, right = side 0
             if(side == ball_direction) begin
-                // check if paddle is less than one step away from wall, if so then only move paddle to wall instead of full step
+                // check if paddle is less than one step away from wall, and ball is either above/below midpoint of paddle, if so then only move paddle to wall instead of full step
                 if((outY-dy < wall_width &&
                     ball_y < wall_width+(length>>1)) ||
                     (outY+length+dy > 480-wall_width &&

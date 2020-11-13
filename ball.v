@@ -18,8 +18,10 @@ module ball(ball_width, wall_width, paddle_width, paddle_length, paddle_l_y, pad
     assign LED = {dir_x, dir_y}; // debug LEDs
     assign ball_direction = dir_x; // determine which paddle ball is moving towards
 
-    always @(posedge clk or posedge reset) begin
-        if(reset) begin
+    reg score; // round finished
+
+    always @(posedge clk or posedge reset or posedge score) begin
+        if(reset || score) begin
             outX <= 310-(ball_width>>1); // ball starts in middle
             outY <= 240-(ball_width>>1);
 
@@ -28,29 +30,45 @@ module ball(ball_width, wall_width, paddle_width, paddle_length, paddle_l_y, pad
 
             dir_x <= 1'b1; // initial direction
             dir_y <= 1'b1;
+
+            score <= 1'b0;
         end
         else begin
             // collision detection
-            if(outX < paddle_width &&
-                outY+ball_width > paddle_l_y &&
-                outY < paddle_l_y+paddle_length) begin // left paddle
-                dir_x <= 1'b0;
+            // detect if next move is a goal
+            if(outX-dx < 0 ||
+                outX+ball_width+dx > 640) begin
+                if(dir_x == 1'b1) begin
+                    outX <= 0;
+                end
+                else begin
+                    outX <= 640-ball_width;
+                end
+                score <= 1'b1; // resets ball
             end
-            else if(outX+ball_width > 640-paddle_width &&
-                outY+ball_width > paddle_r_y &&
-                outY < paddle_r_y+paddle_length) begin // right wall
-                dir_x <= 1'b1;
-            end
-            // move ball up or down
-            outX <= dir_x ? outX - dx : outX + dx;
+            // else no goal, regular movement
+            else begin
+                if(outX < paddle_width &&
+                    outY+ball_width > paddle_l_y &&
+                    outY < paddle_l_y+paddle_length) begin // left paddle
+                    dir_x <= 1'b0;
+                end
+                else if(outX+ball_width > 640-paddle_width &&
+                    outY+ball_width > paddle_r_y &&
+                    outY < paddle_r_y+paddle_length) begin // right wall
+                    dir_x <= 1'b1;
+                end
+                // move ball up or down
+                outX <= dir_x ? outX - dx : outX + dx;
 
-            if(outY < wall_width) begin // top wall
-                dir_y <= 1'b0;
+                if(outY < wall_width) begin // top wall
+                    dir_y <= 1'b0;
+                end
+                else if(outY+ball_width > 480-wall_width) begin // bottom wall
+                    dir_y <= 1'b1;
+                end
+                outY <= dir_y ? outY - dy : outY + dy;
             end
-            else if(outY+ball_width > 480-wall_width) begin // bottom wall
-                dir_y <= 1'b1;
-            end
-            outY <= dir_y ? outY - dy : outY + dy;
         end
     end
 endmodule
