@@ -28,7 +28,7 @@ module paddle(width, wall_width, ball_width, length, clk, reset, ball_x, ball_y,
             end
             outY <= ((480-length)>>1);
 
-            dy <= 2;
+            dy <= 4; // paddle speed
             // move <= 1'b0;
         end
         else begin

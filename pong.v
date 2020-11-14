@@ -48,7 +48,7 @@ module pong(
     // LED[1] - ball direction x
 
     // Clock divider 100 MHz -> 50 Hz
-	wire clk50; // 25MHz clock
+	wire clk50; // 50Hz clock
 
 	reg[20:0] pixCounter = 0;      // Pixel counter to divide the clock
 	assign clk50 = pixCounter[20]; // Set the clock high whenever the second bit (2) is high
@@ -66,7 +66,7 @@ module pong(
 	reg[5:0] ball_width = 32; // 32px width of ball
     wire ball_direction;
 
-    ball ball_loc(.ball_width(ball_width), .wall_width(wall_width), .paddle_width(paddle_width), .paddle_length(paddle_length), .paddle_l_y(paddle_left_y), .paddle_r_y(paddle_right_y), .clk(clk50), .reset(reset), .outX(ball_x), .outY(ball_y), .ball_direction(ball_direction), .LED(LEDout[1:0]));
+    ball ball_loc(.ball_width(ball_width), .wall_width(wall_width), .paddle_width(paddle_width), .paddle_length(paddle_length), .paddle_l_y(paddle_left_y), .paddle_r_y(paddle_right_y), .clk(clk50), .reset(reset), .outX(ball_x), .outY(ball_y), .ball_direction(ball_direction), .LED(LEDout[15:0]));
 
 
     // calculate paddle position
@@ -75,12 +75,12 @@ module pong(
     wire[9:0] paddle_right_x;
 	wire[8:0] paddle_right_y;
     reg[5:0] paddle_width = 20;
-    reg[8:0] paddle_length = 150;
+    reg[8:0] paddle_length = 100;
 
     wire[3:0] score_left_tens, score_left_ones, score_right_tens, score_right_ones;
 
     // paddle_left
-    paddle paddle_left(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ai_ctrl(1'b1), .side(1'b1), .up(1'b0), .down(1'b0), .outX(paddle_left_x), .outY(paddle_left_y), .LED(LEDout[3:2]));
+    paddle paddle_left(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ai_ctrl(1'b1), .side(1'b1), .up(1'b0), .down(1'b0), .outX(paddle_left_x), .outY(paddle_left_y), .LED(2'bz));
 
     // left side player score
     score left_score(.ball_x(ball_x), .ball_width(ball_width), .paddle_left(1'b1), .clk(clk50), .reset(reset), .score_tens(score_left_tens), .score_ones(score_left_ones));
@@ -90,7 +90,7 @@ module pong(
     // assign LEDout[13] = score_right[0];
 
     // paddle_right
-    paddle paddle_right(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ai_ctrl(1'b0), .side(1'b0), .up(paddle_up), .down(paddle_down), .outX(paddle_right_x), .outY(paddle_right_y), .LED(LEDout[5:4]));
+    paddle paddle_right(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ai_ctrl(1'b0), .side(1'b0), .up(paddle_up), .down(paddle_down), .outX(paddle_right_x), .outY(paddle_right_y), .LED(2'bz));
 
     // right side player score
     score right_score(.ball_x(ball_x), .ball_width(ball_width), .paddle_left(1'b0), .clk(clk50), .reset(reset), .score_tens(score_right_tens), .score_ones(score_right_ones));
