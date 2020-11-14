@@ -28,8 +28,8 @@ module ball(ball_width, wall_width, paddle_width, paddle_length, paddle_l_y, pad
             dx <= 3; // initial speed
             dy <= 3;
 
-            dir_x <= 1'b1; // initial direction
-            dir_y <= 1'b1;
+            dir_x <= 1'b0; // first ball towards player
+            dir_y <= 1'b1; // should randomize this part
 
             score <= 1'b0;
         end
@@ -42,7 +42,7 @@ module ball(ball_width, wall_width, paddle_width, paddle_length, paddle_l_y, pad
                     outX <= 0;
                 end
                 else begin
-                    outX <= 640-ball_width;
+                    outX <= 639-ball_width;
                 end
                 score <= 1'b1; // resets ball
             end

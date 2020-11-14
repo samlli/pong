@@ -101,11 +101,12 @@ module VGAController(
 	assign colorOut = active ? colorData : 12'd0; // When not active, output black
 
 	// Quickly assign the output colors to their channels using concatenation
-	assign {VGA_R, VGA_G, VGA_B} = (ball | paddle_l | paddle_r) ? 12'hfff : colorOut; // if in ball draw white otherwise draw regular background
+	assign {VGA_R, VGA_G, VGA_B} = (ball | paddle_l | paddle_r | l_tens | l_ones | r_tens | r_ones) ? 12'hfff : colorOut; // if in ball draw white otherwise draw regular background
 
 	// Determine if area inside ball
 	reg ball;
 	reg paddle_l, paddle_r;
+	reg l_tens, l_ones, r_tens, r_ones;
 
 	always @(screenEnd) begin
 		// ball
@@ -126,14 +127,166 @@ module VGAController(
 		else
 			paddle_r <= 1'b0;
 
+
+		// display a two digit score on left and right of screen
+		// each score has a 'tens' and 'ones' digit
+		// get ready for some shitty code
+
 		// score left
-		// if(x)
+		// tens
+		if(score_left_tens==0) begin
+			if((x>80 && x<110 && y>30 && y<40) || (x>80 && x<90 && y>30 && y<80) || (x>100 && x<110 && y>30 && y<80) || (x>80 && x<110 && y>70 && y<80))
+				l_tens <= 1'b1;
+			else
+				l_tens <= 1'b0;
+		end
+		else if(score_left_tens==1) begin
+			if((x>100 && x<110 && y>30 && y<80))
+				l_tens <= 1'b1;
+			else
+				l_tens <= 1'b0;
+		end
 
+		// ones
+		// holy fuck
+		// but it works, so...
+		if(score_left_ones==0) begin
+			if((x>120 && x<150 && y>30 && y<40) || (x>120 && x<130 && y>30 && y<80) || (x>140 && x<150 && y>30 && y<80) || (x>120 && x<150 && y>70 && y<80))
+				l_ones <= 1'b1;
+			else
+				l_ones <= 1'b0;
+		end
+		else if(score_left_ones==1) begin
+			if((x>140 && x<150 && y>30 && y<80))
+				l_ones <= 1'b1;
+			else
+				l_ones <= 1'b0;
+		end
+		else if(score_left_ones==2) begin
+			if((x>120 && x<150 && y>30 && y<40) || (x>120 && x<130 && y>50 && y<80) || (x>140 && x<150 && y>30 && y<60) || (x>120 && x<150 && y>70 && y<80) || (x>120 && x<150 && y>50 && y<60))
+				l_ones <= 1'b1;
+			else
+				l_ones <= 1'b0;
+		end
+		else if(score_left_ones==3) begin
+			if((x>120 && x<150 && y>30 && y<40) || (x>140 && x<150 && y>30 && y<80) || (x>120 && x<150 && y>70 && y<80) || (x>120 && x<150 && y>50 && y<60))
+				l_ones <= 1'b1;
+			else
+				l_ones <= 1'b0;
+		end
+		else if(score_left_ones==4) begin
+			if((x>140 && x<150 && y>30 && y<80) || (x>120 && x<150 && y>50 && y<60) || (x>120 && x<130 && y>30 && y<60))
+				l_ones <= 1'b1;
+			else
+				l_ones <= 1'b0;
+		end
+		else if(score_left_ones==5) begin
+			if((x>120 && x<150 && y>30 && y<40) || (x>120 && x<130 && y>30 && y<60) || (x>140 && x<150 && y>50 && y<80) || (x>120 && x<150 && y>70 && y<80) || (x>120 && x<150 && y>50 && y<60))
+				l_ones <= 1'b1;
+			else
+				l_ones <= 1'b0;
+		end
+		else if(score_left_ones==6) begin
+			if((x>120 && x<150 && y>30 && y<40) || (x>120 && x<130 && y>30 && y<80) || (x>140 && x<150 && y>50 && y<80) || (x>120 && x<150 && y>70 && y<80) || (x>120 && x<150 && y>50 && y<60))
+				l_ones <= 1'b1;
+			else
+				l_ones <= 1'b0;
+		end
+		else if(score_left_ones==7) begin
+			if((x>140 && x<150 && y>30 && y<80) || (x>120 && x<150 && y>30 && y<40))
+				l_ones <= 1'b1;
+			else
+				l_ones <= 1'b0;
+		end
+		else if(score_left_ones==8) begin
+			if((x>120 && x<150 && y>30 && y<40) || (x>120 && x<130 && y>30 && y<80) || (x>140 && x<150 && y>30 && y<80) || (x>120 && x<150 && y>70 && y<80) || (x>120 && x<150 && y>50 && y<60))
+				l_ones <= 1'b1;
+			else
+				l_ones <= 1'b0;
+		end
+		else if(score_left_ones==9) begin
+			if((x>120 && x<150 && y>30 && y<40) || (x>120 && x<130 && y>30 && y<60) || (x>140 && x<150 && y>30 && y<80) || (x>120 && x<150 && y>70 && y<80) || (x>120 && x<150 && y>50 && y<60))
+				l_ones <= 1'b1;
+			else
+				l_ones <= 1'b0;
+		end
 
+		// right side score
+		// basically the same as the left side
+		if(score_right_tens==0) begin
+			if((x>490 && x<520 && y>30 && y<40) || (x>490 && x<520 && y>70 && y<80) || (x>490 && x<500 && y>30 && y<80) || (x>510 && x<520 && y>30 && y<80))
+				r_tens <= 1'b1;
+			else
+				r_tens <= 1'b0;
+		end
+		else if(score_right_tens==1) begin
+			if((x>510 && x<520 && y>30 && y<80))
+				r_tens <= 1'b1;
+			else
+				r_tens <= 1'b0;
+		end
 
-
-
-
+		// ones
+		if(score_right_ones==0) begin
+			if((x>530 && x<560 && y>30 && y<40) || (x>530 && x<560 && y>70 && y<80) || (x>530 && x<540 && y>30 && y<80) || (x>550 && x<560 && y>30 && y<80))
+				r_ones <= 1'b1;
+			else
+				r_ones <= 1'b0;
+		end
+		else if(score_right_ones==1) begin
+			if((x>550 && x<560 && y>30 && y<80))
+				r_ones <= 1'b1;
+			else
+				r_ones <= 1'b0;
+		end
+		else if(score_right_ones==2) begin
+			if((x>530 && x<560 && y>30 && y<40) || (x>530 && x<560 && y>70 && y<80) || (x>530 && x<540 && y>50 && y<80) || (x>550 && x<560 && y>30 && y<60) || (x>530 && x<560 && y>50 && y<60))
+				r_ones <= 1'b1;
+			else
+				r_ones <= 1'b0;
+		end
+		else if(score_right_ones==3) begin
+			if((x>530 && x<560 && y>30 && y<40) || (x>530 && x<560 && y>70 && y<80) || (x>550 && x<560 && y>30 && y<80) || (x>530 && x<560 && y>50 && y<60))
+				r_ones <= 1'b1;
+			else
+				r_ones <= 1'b0;
+		end
+		else if(score_right_ones==4) begin
+			if((x>550 && x<560 && y>30 && y<80) || (x>530 && x<560 && y>50 && y<60) || (x>530 && x<540 && y>30 && y<60))
+				r_ones <= 1'b1;
+			else
+				r_ones <= 1'b0;
+		end
+		else if(score_right_ones==5) begin
+			if((x>530 && x<560 && y>30 && y<40) || (x>530 && x<560 && y>70 && y<80) || (x>530 && x<540 && y>30 && y<60) || (x>550 && x<560 && y>50 && y<80) || (x>530 && x<560 && y>50 && y<60))
+				r_ones <= 1'b1;
+			else
+				r_ones <= 1'b0;
+		end
+		else if(score_right_ones==6) begin
+			if((x>530 && x<560 && y>30 && y<40) || (x>530 && x<560 && y>70 && y<80) || (x>530 && x<540 && y>30 && y<80) || (x>550 && x<560 && y>50 && y<80) || (x>530 && x<560 && y>50 && y<60))
+				r_ones <= 1'b1;
+			else
+				r_ones <= 1'b0;
+		end
+		else if(score_right_ones==7) begin
+			if((x>550 && x<560 && y>30 && y<80) || (x>530 && x<560 && y>30 && y<40))
+				r_ones <= 1'b1;
+			else
+				r_ones <= 1'b0;
+		end
+		else if(score_right_ones==8) begin
+			if((x>530 && x<560 && y>30 && y<40) || (x>530 && x<560 && y>70 && y<80) || (x>550 && x<560 && y>30 && y<80) || (x>530 && x<560 && y>50 && y<60) || (x>530 && x<540 && y>30 && y<80))
+				r_ones <= 1'b1;
+			else
+				r_ones <= 1'b0;
+		end
+		else if(score_right_ones==9) begin
+			if((x>530 && x<560 && y>30 && y<40) || (x>530 && x<560 && y>70 && y<80) || (x>550 && x<560 && y>30 && y<80) || (x>530 && x<560 && y>50 && y<60) || (x>530 && x<540 && y>30 && y<60))
+				r_ones <= 1'b1;
+			else
+				r_ones <= 1'b0;
+		end
+		// wow
 	end
-
 endmodule
