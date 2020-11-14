@@ -19,7 +19,10 @@ module VGAController(
 	input[9:0] paddle_r_x,
 	input[8:0] paddle_r_y,
 	input[5:0] paddle_width,
-	input[8:0] paddle_length);
+	input[8:0] paddle_length,
+
+	input[3:0] score_left_tens, score_left_ones,
+	input[3:0] score_right_tens, score_right_ones);
 
 	// Lab Memory Files Location
 	localparam FILES_PATH = "";	// in root
@@ -122,6 +125,15 @@ module VGAController(
 			paddle_r <= 1'b1;
 		else
 			paddle_r <= 1'b0;
+
+		// score left
+		// if(x)
+
+
+
+
+
+
 	end
 
 endmodule

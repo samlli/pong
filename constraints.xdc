@@ -73,3 +73,8 @@ set_property PACKAGE_PIN N14 [get_ports {LEDout[12]}]
 set_property PACKAGE_PIN J13 [get_ports {LEDout[13]}]
 set_property PACKAGE_PIN K15 [get_ports {LEDout[14]}]
 set_property PACKAGE_PIN H17 [get_ports {LEDout[15]}]
+
+set_property IOSTANDARD LVCMOS33 [get_ports paddle_down]
+set_property IOSTANDARD LVCMOS33 [get_ports paddle_up]
+set_property PACKAGE_PIN M18 [get_ports paddle_down]
+set_property PACKAGE_PIN P18 [get_ports paddle_up]
