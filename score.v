@@ -13,7 +13,7 @@ module score(ball_x, ball_width, paddle_left, clk, reset, score_tens, score_ones
         end
         else begin
             if(paddle_left == 1'b1) begin
-                if(ball_x+ball_width >= 638) begin
+                if(ball_x >= 639-ball_width) begin
                     if(score_ones < 9) begin
                         score_ones <= score_ones + 1;
                     end

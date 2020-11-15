@@ -24,7 +24,7 @@ module paddle(width, wall_width, ball_width, length, clk, reset, ball_x, ball_y,
                 outX <= 0;
             end
             else if(side == 1'b0) begin // right paddle
-                outX <= 640-width;
+                outX <= 639-width;
             end
             outY <= ((480-length)>>1);
 
@@ -40,9 +40,9 @@ module paddle(width, wall_width, ball_width, length, clk, reset, ball_x, ball_y,
                 if(side == ball_direction) begin
                     // check if paddle is less than one step away from wall, and ball is either above/below midpoint of paddle, if so then only move paddle to wall instead of full step
                     if((outY-dy < wall_width &&
-                        ball_y < wall_width+(length>>1)) ||
+                        ball_y+(ball_width>>1) < wall_width+(length>>1)) ||
                         (outY+length+dy > 480-wall_width &&
-                        ball_y > 480-wall_width-(length>>1))) begin
+                        ball_y+(ball_width>>1) > 480-wall_width-(length>>1))) begin
                         // if paddle is closest to the bottom wall
                         if(outY-wall_width > 480-wall_width-(outY+length)) begin
                             outY <= 480-wall_width-length;
@@ -58,12 +58,12 @@ module paddle(width, wall_width, ball_width, length, clk, reset, ball_x, ball_y,
                             outY <= 480-length-wall_width) begin
                             // move <= 1'b1;
                             // move paddle down
-                            if(outY+(length>>1) < ball_y) begin
+                            if(outY+(length>>1) < ball_y+(ball_width>>1)) begin
                                 outY <= outY + dy;
                                 // move <= 1'b1;
                             end
                             // move paddle up
-                            else if(outY+(length>>1) > ball_y) begin
+                            else if(outY+(length>>1) > ball_y+(ball_width>>1)) begin
                                 outY <= outY - dy;
                                 // move <= 1'b0;
                             end

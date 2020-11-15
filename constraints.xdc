@@ -1,5 +1,3 @@
-set_property PACKAGE_PIN E3 [get_ports clk]
-set_property IOSTANDARD LVCMOS33 [get_ports clk]
 
 set_property PACKAGE_PIN N17 [get_ports reset]
 set_property IOSTANDARD LVCMOS33 [get_ports reset]
@@ -78,3 +76,12 @@ set_property IOSTANDARD LVCMOS33 [get_ports paddle_down]
 set_property IOSTANDARD LVCMOS33 [get_ports paddle_up]
 set_property PACKAGE_PIN M18 [get_ports paddle_down]
 set_property PACKAGE_PIN P18 [get_ports paddle_up]
+
+set_property PACKAGE_PIN E3 [get_ports clkin]
+set_property IOSTANDARD LVCMOS33 [get_ports clkin]
+set_property IOSTANDARD LVCMOS33 [get_ports {ctrl[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ctrl[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ctrl[0]}]
+set_property PACKAGE_PIN J15 [get_ports {ctrl[0]}]
+set_property PACKAGE_PIN L16 [get_ports {ctrl[1]}]
+set_property PACKAGE_PIN V10 [get_ports {ctrl[2]}]

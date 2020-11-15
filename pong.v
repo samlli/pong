@@ -1,6 +1,6 @@
 `timescale 1 ns/ 100 ps
 module pong(
-    input clk, 			// 100 MHz System Clock
+    input clkin, 			// 100 MHz System Clock
     input reset, 		// Reset Signal
     output hSync, 		// H Sync Signal
     output vSync, 		// Veritcal Sync Signal
@@ -11,7 +11,10 @@ module pong(
     inout ps2_data,
     output[15:0] LEDout,
     input paddle_up,
-    input paddle_down);
+    input paddle_down,
+    input [2:0] ctrl);
+
+    assign clk = ctrl[2] ? clkin : 1'b0; // freeze screen
 
     // assign LEDout[15:11] = 4'b0; // debug LEDs unused for now
 
@@ -66,7 +69,7 @@ module pong(
 	reg[5:0] ball_width = 32; // 32px width of ball
     wire ball_direction;
 
-    ball ball_loc(.ball_width(ball_width), .wall_width(wall_width), .paddle_width(paddle_width), .paddle_length(paddle_length), .paddle_l_y(paddle_left_y), .paddle_r_y(paddle_right_y), .clk(clk50), .reset(reset), .outX(ball_x), .outY(ball_y), .ball_direction(ball_direction), .LED(LEDout[15:0]));
+    ball ball_loc(.ball_width(ball_width), .wall_width(wall_width), .paddle_width(paddle_width), .paddle_length(paddle_length), .paddle_l_y(paddle_left_y), .paddle_r_y(paddle_right_y), .clk(clk50), .reset(reset), .outX(ball_x), .outY(ball_y), .ball_direction(ball_direction), .LED(LEDout[15:0]), .score_left_tens(score_left_tens), .score_left_ones(score_left_ones), .score_right_tens(score_right_tens), .score_right_ones(score_right_ones));
 
 
     // calculate paddle position
@@ -80,23 +83,23 @@ module pong(
     wire[3:0] score_left_tens, score_left_ones, score_right_tens, score_right_ones;
 
     // paddle_left
-    paddle paddle_left(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ai_ctrl(1'b1), .side(1'b1), .up(1'b0), .down(1'b0), .outX(paddle_left_x), .outY(paddle_left_y), .LED(2'bz));
+    paddle paddle_left(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ai_ctrl(ctrl[0]), .side(1'b1), .up(1'b0), .down(1'b0), .outX(paddle_left_x), .outY(paddle_left_y), .LED(2'bz));
 
     // left side player score
-    score left_score(.ball_x(ball_x), .ball_width(ball_width), .paddle_left(1'b1), .clk(clk50), .reset(reset), .score_tens(score_left_tens), .score_ones(score_left_ones));
+    // score left_score(.ball_x(ball_x), .ball_width(ball_width), .paddle_left(1'b1), .clk(clk50), .reset(reset), .score_tens(score_left_tens), .score_ones(score_left_ones));
 
     // assign LEDout[15] = score_right[2];
     // assign LEDout[14] = score_right[1];
     // assign LEDout[13] = score_right[0];
 
     // paddle_right
-    paddle paddle_right(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ai_ctrl(1'b0), .side(1'b0), .up(paddle_up), .down(paddle_down), .outX(paddle_right_x), .outY(paddle_right_y), .LED(2'bz));
+    paddle paddle_right(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ai_ctrl(ctrl[1]), .side(1'b0), .up(paddle_up), .down(paddle_down), .outX(paddle_right_x), .outY(paddle_right_y), .LED(2'bz));
 
     // right side player score
-    score right_score(.ball_x(ball_x), .ball_width(ball_width), .paddle_left(1'b0), .clk(clk50), .reset(reset), .score_tens(score_right_tens), .score_ones(score_right_ones));
+    // score right_score(.ball_x(ball_x), .ball_width(ball_width), .paddle_left(1'b0), .clk(clk50), .reset(reset), .score_tens(score_right_tens), .score_ones(score_right_ones));
 
     // VGAController for drawing on screen
-    VGAController board(.clk(clk), .reset(reset), .hSync(hSync), .vSync(vSync), .VGA_R(VGA_R), .VGA_G(VGA_G), .VGA_B(VGA_B), .ps2_clk(ps2_clk), .ps2_data(ps2_data), .ball_x(ball_x), .ball_y(ball_y), .ball_width(ball_width), .paddle_l_x(paddle_left_x), .paddle_l_y(paddle_left_y), .paddle_r_x(paddle_right_x), .paddle_r_y(paddle_right_y), .paddle_width(paddle_width), .paddle_length(paddle_length), .score_left_tens(score_left_tens), .score_left_ones(score_left_ones), .score_right_tens(score_right_tens), .score_right_ones(score_right_ones));
+    VGAController board(.clk(clkin), .reset(reset), .hSync(hSync), .vSync(vSync), .VGA_R(VGA_R), .VGA_G(VGA_G), .VGA_B(VGA_B), .ps2_clk(ps2_clk), .ps2_data(ps2_data), .ball_x(ball_x), .ball_y(ball_y), .ball_width(ball_width), .paddle_l_x(paddle_left_x), .paddle_l_y(paddle_left_y), .paddle_r_x(paddle_right_x), .paddle_r_y(paddle_right_y), .paddle_width(paddle_width), .paddle_length(paddle_length), .score_left_tens(score_left_tens), .score_left_ones(score_left_ones), .score_right_tens(score_right_tens), .score_right_ones(score_right_ones));
 
 
 
