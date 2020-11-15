@@ -93,11 +93,13 @@ module ball(ball_width, wall_width, paddle_width, paddle_length, paddle_l_y, pad
                     if(dx < 6) begin // cap speed at 6
                         dx <= dx + 1; // ball gets one step faster
                     end
+                    dy <= {random[2:1], 1'b1};
                 end
                 else if(outX+ball_width > 639-paddle_width &&
                     outY+ball_width > paddle_r_y &&
-                    outY < paddle_r_y+paddle_length) begin // right wall
+                    outY < paddle_r_y+paddle_length) begin // right paddle
                     dir_x <= 1'b1;
+                    dy <= {random[2:1], 1'b1};
                 end
 
                 // slow the testing down!

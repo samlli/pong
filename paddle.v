@@ -24,7 +24,7 @@ module paddle(width, wall_width, ball_width, length, clk, reset, ball_x, ball_y,
                 outX <= 0;
             end
             else if(side == 1'b0) begin // right paddle
-                outX <= 639-width;
+                outX <= 640-width;
             end
             outY <= ((480-length)>>1);
 
