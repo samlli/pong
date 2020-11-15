@@ -12,9 +12,12 @@ module pong(
     output[15:0] LEDout,
     input paddle_up,
     input paddle_down,
-    input [2:0] ctrl);
+    input [3:0] ctrl);
 
     assign clk = ctrl[2] ? clkin : 1'b0; // freeze screen
+
+    wire ball2;
+    assign ball2 = ctrl[3];
 
     // assign LEDout[15:11] = 4'b0; // debug LEDs unused for now
 
@@ -69,7 +72,16 @@ module pong(
 	reg[5:0] ball_width = 32; // 32px width of ball
     wire ball_direction;
 
-    ball ball_loc(.ball_width(ball_width), .wall_width(wall_width), .paddle_width(paddle_width), .paddle_length(paddle_length), .paddle_l_y(paddle_left_y), .paddle_r_y(paddle_right_y), .clk(clk50), .reset(reset), .outX(ball_x), .outY(ball_y), .ball_direction(ball_direction), .LED(LEDout[15:0]), .score_left_tens(score_left_tens), .score_left_ones(score_left_ones), .score_right_tens(score_right_tens), .score_right_ones(score_right_ones));
+    ball ball_loc(.ball_width(ball_width), .wall_width(wall_width), .paddle_width(paddle_width), .paddle_length(paddle_length), .paddle_l_y(paddle_left_y), .paddle_r_y(paddle_right_y), .clk(clk50), .reset(reset), .outX(ball_x), .outY(ball_y), .ball_direction(ball_direction), .LED(LEDout[15:0]), .score_left_tens(score_left_tens), .score_left_ones(score_left_ones), .score_right_tens(score_right_tens), .score_right_ones(score_right_ones), .activein(1'b1), .activeout(activeout));
+
+    // second ball
+    wire[9:0] ball_2_x;
+	wire[8:0] ball_2_y;
+    wire ball_2_direction;
+
+    // need global score variables now? both in/out and synchronize
+
+    ball ball_2_loc(.ball_width(ball_width), .wall_width(wall_width), .paddle_width(paddle_width), .paddle_length(paddle_length), .paddle_l_y(paddle_left_y), .paddle_r_y(paddle_right_y), .clk(clk50), .reset(reset), .outX(ball_2_x), .outY(ball_2_y), .ball_direction(ball_2_direction), .LED(16'bz), .score_left_tens(4'bz), .score_left_ones(4'bz), .score_right_tens(4'bz), .score_right_ones(4'bz), .activein(activeout), .activeout(1'bz));
 
 
     // calculate paddle position
@@ -83,7 +95,7 @@ module pong(
     wire[3:0] score_left_tens, score_left_ones, score_right_tens, score_right_ones;
 
     // paddle_left
-    paddle paddle_left(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ai_ctrl(ctrl[0]), .side(1'b1), .up(1'b0), .down(1'b0), .outX(paddle_left_x), .outY(paddle_left_y), .LED(2'bz));
+    paddle paddle_left(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ball2(ball2), .ball_2_x(ball_2_x), .ball_2_y(ball_2_y), .ball_2_direction(ball_2_direction), .ai_ctrl(ctrl[0]), .side(1'b1), .up(1'b0), .down(1'b0), .outX(paddle_left_x), .outY(paddle_left_y), .LED(2'bz));
 
     // left side player score
     // score left_score(.ball_x(ball_x), .ball_width(ball_width), .paddle_left(1'b1), .clk(clk50), .reset(reset), .score_tens(score_left_tens), .score_ones(score_left_ones));
@@ -93,13 +105,13 @@ module pong(
     // assign LEDout[13] = score_right[0];
 
     // paddle_right
-    paddle paddle_right(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ai_ctrl(ctrl[1]), .side(1'b0), .up(paddle_up), .down(paddle_down), .outX(paddle_right_x), .outY(paddle_right_y), .LED(2'bz));
+    paddle paddle_right(.width(paddle_width), .wall_width(wall_width), .ball_width(ball_width), .length(paddle_length), .clk(clk50), .reset(reset), .ball_x(ball_x), .ball_y(ball_y), .ball_direction(ball_direction), .ball2(ball2), .ball_2_x(ball_2_x), .ball_2_y(ball_2_y), .ball_2_direction(ball_2_direction), .ai_ctrl(ctrl[1]), .side(1'b0), .up(paddle_up), .down(paddle_down), .outX(paddle_right_x), .outY(paddle_right_y), .LED(2'bz));
 
     // right side player score
     // score right_score(.ball_x(ball_x), .ball_width(ball_width), .paddle_left(1'b0), .clk(clk50), .reset(reset), .score_tens(score_right_tens), .score_ones(score_right_ones));
 
     // VGAController for drawing on screen
-    VGAController board(.clk(clkin), .reset(reset), .hSync(hSync), .vSync(vSync), .VGA_R(VGA_R), .VGA_G(VGA_G), .VGA_B(VGA_B), .ps2_clk(ps2_clk), .ps2_data(ps2_data), .ball_x(ball_x), .ball_y(ball_y), .ball_width(ball_width), .paddle_l_x(paddle_left_x), .paddle_l_y(paddle_left_y), .paddle_r_x(paddle_right_x), .paddle_r_y(paddle_right_y), .paddle_width(paddle_width), .paddle_length(paddle_length), .score_left_tens(score_left_tens), .score_left_ones(score_left_ones), .score_right_tens(score_right_tens), .score_right_ones(score_right_ones));
+    VGAController board(.clk(clkin), .reset(reset), .hSync(hSync), .vSync(vSync), .VGA_R(VGA_R), .VGA_G(VGA_G), .VGA_B(VGA_B), .ps2_clk(ps2_clk), .ps2_data(ps2_data), .ball_x(ball_x), .ball_y(ball_y), .ball_width(ball_width), .ball2(ball2), .ball_2_x(ball_2_x), .ball_2_y(ball_2_y), .paddle_l_x(paddle_left_x), .paddle_l_y(paddle_left_y), .paddle_r_x(paddle_right_x), .paddle_r_y(paddle_right_y), .paddle_width(paddle_width), .paddle_length(paddle_length), .score_left_tens(score_left_tens), .score_left_ones(score_left_ones), .score_right_tens(score_right_tens), .score_right_ones(score_right_ones));
 
 
 

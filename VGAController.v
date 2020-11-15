@@ -13,6 +13,9 @@ module VGAController(
 	input[9:0] ball_x,	// ball data
 	input[8:0] ball_y,
 	input[5:0] ball_width,
+	input ball2,
+	input[9:0] ball_2_x,
+	input[8:0] ball_2_y,
 
 	input[9:0] paddle_l_x, // paddle data
 	input[8:0] paddle_l_y,
@@ -101,10 +104,10 @@ module VGAController(
 	assign colorOut = active ? colorData : 12'd0; // When not active, output black
 
 	// Quickly assign the output colors to their channels using concatenation
-	assign {VGA_R, VGA_G, VGA_B} = (ball | paddle_l | paddle_r | l_tens | l_ones | r_tens | r_ones) ? 12'hfff : colorOut; // if in ball draw white otherwise draw regular background
+	assign {VGA_R, VGA_G, VGA_B} = (ball | ball_2 | paddle_l | paddle_r | l_tens | l_ones | r_tens | r_ones) ? 12'hfff : colorOut; // if in ball draw white otherwise draw regular background
 
 	// Determine if area inside ball
-	reg ball;
+	reg ball, ball_2;
 	reg paddle_l, paddle_r;
 	reg l_tens, l_ones, r_tens, r_ones;
 
@@ -114,6 +117,12 @@ module VGAController(
 			ball <= 1'b1; // coord inside ball
 		else
 			ball <= 1'b0; // coord outside ball
+
+		// ball 2
+		if(ball2 && x>=ball_2_x && x<=ball_2_x+ball_width && y>=ball_2_y && y<=ball_2_y+ball_width)
+			ball_2 <= 1'b1; // coord inside ball
+		else
+			ball_2 <= 1'b0; // coord outside ball
 
 		// paddle left
 		if(x>paddle_l_x && x<paddle_l_x+paddle_width && y>paddle_l_y && y<paddle_l_y+paddle_length)

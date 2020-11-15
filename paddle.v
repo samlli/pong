@@ -1,5 +1,5 @@
 // outputs X and Y coordinates of upper left corner of paddle
-module paddle(width, wall_width, ball_width, length, clk, reset, ball_x, ball_y, ball_direction, ai_ctrl, side, up, down, outX, outY, LED);
+module paddle(width, wall_width, ball_width, length, clk, reset, ball_x, ball_y, ball_direction, ball2, ball_2_x, ball_2_y, ball_2_direction, ai_ctrl, side, up, down, outX, outY, LED);
     input[5:0] width; // width can range from 0-63
     input[5:0] wall_width, ball_width;
     input[8:0] length;
@@ -7,6 +7,9 @@ module paddle(width, wall_width, ball_width, length, clk, reset, ball_x, ball_y,
     input[9:0] ball_x;
     input[8:0] ball_y;
     input ball_direction, ai_ctrl, side;
+    input[9:0] ball_2_x;
+    input[8:0] ball_2_y;
+    input ball_2_direction, ball2;
     input up, down;
 
     output reg[9:0] outX;
@@ -69,6 +72,41 @@ module paddle(width, wall_width, ball_width, length, clk, reset, ball_x, ball_y,
                             end
                         end
                     end
+                end
+                // chase second ball
+                else if(side == ball_2_direction && ball2 == 1) begin
+                    if((outY-dy < wall_width &&
+                        ball_2_y+(ball_width>>1) < wall_width+(length>>1)) ||
+                        (outY+length+dy > 480-wall_width &&
+                        ball_2_y+(ball_width>>1) > 480-wall_width-(length>>1))) begin
+                        // if paddle is closest to the bottom wall
+                        if(outY-wall_width > 480-wall_width-(outY+length)) begin
+                            outY <= 480-wall_width-length;
+                        end
+                        // otherwise paddle is closest to the top wall
+                        else begin
+                            outY <= wall_width;
+                        end
+                    end
+                    // have paddle take step in direction of ball
+                    else begin
+                        if(outY >= wall_width &&
+                            outY <= 480-length-wall_width) begin
+                            // move <= 1'b1;
+                            // move paddle down
+                            if(outY+(length>>1) < ball_2_y+(ball_width>>1)) begin
+                                outY <= outY + dy;
+                                // move <= 1'b1;
+                            end
+                            // move paddle up
+                            else if(outY+(length>>1) > ball_2_y+(ball_width>>1)) begin
+                                outY <= outY - dy;
+                                // move <= 1'b0;
+                            end
+                        end
+                    end
+
+
                 end
                 // otherwise move paddle closer to center
                 else begin
