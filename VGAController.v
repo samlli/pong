@@ -131,6 +131,7 @@ module VGAController(
 		// display a two digit score on left and right of screen
 		// each score has a 'tens' and 'ones' digit
 		// get ready for some shitty code
+		// cover your eyes kids
 
 		// score left
 		// tens
@@ -142,6 +143,54 @@ module VGAController(
 		end
 		else if(score_left_tens==1) begin
 			if((x>100 && x<110 && y>30 && y<80))
+				l_tens <= 1'b1;
+			else
+				l_tens <= 1'b0;
+		end
+		else if(score_left_tens==2) begin
+			if((x>80 && x<110 && y>30 && y<40) || (x>80 && x<90 && y>50 && y<80) || (x>100 && x<110 && y>30 && y<60) || (x>80 && x<110 && y>70 && y<80) || (x>80 && x<110 && y>50 && y<60))
+				l_tens <= 1'b1;
+			else
+				l_tens <= 1'b0;
+		end
+		else if(score_left_tens==3) begin
+			if((x>80 && x<110 && y>30 && y<40) || (x>100 && x<110 && y>30 && y<80) || (x>80 && x<110 && y>70 && y<80) || (x>80 && x<110 && y>50 && y<60))
+				l_tens <= 1'b1;
+			else
+				l_tens <= 1'b0;
+		end
+		else if(score_left_tens==4) begin
+			if((x>80 && x<90 && y>30 && y<60) || (x>100 && x<110 && y>30 && y<80) || (x>80 && x<110 && y>50 && y<60))
+				l_tens <= 1'b1;
+			else
+				l_tens <= 1'b0;
+		end
+		else if(score_left_tens==5) begin
+			if((x>80 && x<110 && y>30 && y<40) || (x>80 && x<90 && y>30 && y<60) || (x>100 && x<110 && y>50 && y<80) || (x>80 && x<110 && y>70 && y<80) || (x>80 && x<110 && y>50 && y<60))
+				l_tens <= 1'b1;
+			else
+				l_tens <= 1'b0;
+		end
+		else if(score_left_tens==6) begin
+			if((x>80 && x<110 && y>30 && y<40) || (x>80 && x<90 && y>30 && y<80) || (x>100 && x<110 && y>50 && y<80) || (x>80 && x<110 && y>70 && y<80) || (x>80 && x<110 && y>50 && y<60))
+				l_tens <= 1'b1;
+			else
+				l_tens <= 1'b0;
+		end
+		else if(score_left_tens==7) begin
+			if((x>100 && x<110 && y>30 && y<80) || (x>80 && x<110 && y>30 && y<40))
+				l_tens <= 1'b1;
+			else
+				l_tens <= 1'b0;
+		end
+		else if(score_left_tens==8) begin
+			if((x>80 && x<110 && y>30 && y<40) || (x>80 && x<90 && y>30 && y<80) || (x>100 && x<110 && y>30 && y<80) || (x>80 && x<110 && y>70 && y<80) || (x>80 && x<110 && y>50 && y<60))
+				l_tens <= 1'b1;
+			else
+				l_tens <= 1'b0;
+		end
+		else if(score_left_tens==9) begin
+			if((x>80 && x<110 && y>30 && y<40) || (x>80 && x<90 && y>30 && y<60) || (x>100 && x<110 && y>30 && y<80) || (x>80 && x<110 && y>70 && y<80) || (x>80 && x<110 && y>50 && y<60))
 				l_tens <= 1'b1;
 			else
 				l_tens <= 1'b0;
@@ -221,6 +270,54 @@ module VGAController(
 		end
 		else if(score_right_tens==1) begin
 			if((x>510 && x<520 && y>30 && y<80))
+				r_tens <= 1'b1;
+			else
+				r_tens <= 1'b0;
+		end
+		else if(score_right_tens==2) begin
+			if((x>490 && x<520 && y>30 && y<40) || (x>490 && x<520 && y>70 && y<80) || (x>490 && x<500 && y>50 && y<80) || (x>510 && x<520 && y>30 && y<60) || (x>490 && x<520 && y>50 && y<60))
+				r_tens <= 1'b1;
+			else
+				r_tens <= 1'b0;
+		end
+		else if(score_right_tens==3) begin
+			if((x>490 && x<520 && y>30 && y<40) || (x>490 && x<520 && y>70 && y<80) || (x>510 && x<520 && y>30 && y<80) || (x>490 && x<520 && y>50 && y<60))
+				r_tens <= 1'b1;
+			else
+				r_tens <= 1'b0;
+		end
+		else if(score_right_tens==4) begin
+			if((x>490 && x<500 && y>30 && y<60) || (x>510 && x<520 && y>30 && y<80) || (x>490 && x<520 && y>50 && y<60))
+				r_tens <= 1'b1;
+			else
+				r_tens <= 1'b0;
+		end
+		else if(score_right_tens==5) begin
+			if((x>490 && x<520 && y>30 && y<40) || (x>490 && x<520 && y>70 && y<80) || (x>490 && x<500 && y>30 && y<60) || (x>510 && x<520 && y>50 && y<80) || (x>490 && x<520 && y>50 && y<60))
+				r_tens <= 1'b1;
+			else
+				r_tens <= 1'b0;
+		end
+		else if(score_right_tens==6) begin
+			if((x>490 && x<520 && y>30 && y<40) || (x>490 && x<520 && y>70 && y<80) || (x>490 && x<500 && y>30 && y<80) || (x>510 && x<520 && y>50 && y<80) || (x>490 && x<520 && y>50 && y<60))
+				r_tens <= 1'b1;
+			else
+				r_tens <= 1'b0;
+		end
+		else if(score_right_tens==7) begin
+			if((x>510 && x<520 && y>30 && y<80) || (x>490 && x<520 && y>30 && y<40))
+				r_tens <= 1'b1;
+			else
+				r_tens <= 1'b0;
+		end
+		else if(score_right_tens==8) begin
+			if((x>490 && x<520 && y>30 && y<40) || (x>490 && x<520 && y>70 && y<80) || (x>490 && x<500 && y>30 && y<80) || (x>510 && x<520 && y>30 && y<80) || (x>490 && x<520 && y>50 && y<60))
+				r_tens <= 1'b1;
+			else
+				r_tens <= 1'b0;
+		end
+		else if(score_right_tens==9) begin
+			if((x>490 && x<520 && y>30 && y<40) || (x>490 && x<520 && y>70 && y<80) || (x>490 && x<500 && y>30 && y<60) || (x>510 && x<520 && y>30 && y<80) || (x>490 && x<520 && y>50 && y<60))
 				r_tens <= 1'b1;
 			else
 				r_tens <= 1'b0;
